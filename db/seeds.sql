@@ -13,7 +13,4 @@ INSERT INTO employee(first_name, last_name, role_id )
 VALUES('John', 'Doe',1),
       ('Mike', 'Chan',2),
       ('Ashley', 'Rodriguez',3);
-
-
- UPDATE  employee SET manager_id =1  WHERE id=2;
-    
+ 
