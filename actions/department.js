@@ -4,7 +4,7 @@ class Deparment extends db {
 
 
     async getDepartments() {
-        const result = await this.query('SELECT * FROM department');
+        const result = await this.query('SELECT * FROM department ORDER BY id ASC');
 
         return result.rows;
     }
