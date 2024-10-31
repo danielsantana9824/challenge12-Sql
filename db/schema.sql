@@ -1,8 +1,7 @@
-drop database if exists employeeTracker;
+drop database if exists employeeBd;
 
-create database employeeTracker;
+create database employeeBd;
 
-\c employeeTracker;
 
 DROP TABLE IF EXISTS department;
 DROP TABLE IF EXISTS roles;
@@ -33,8 +32,8 @@ id serial primary key,
 first_name varchar(30) unique not null,
 last_name varchar(30) unique not null,   
 
-role_id INTEGER NOT NULL,
-FOREIGN KEY(role_id ) 
+roles_id INTEGER NOT NULL,
+FOREIGN KEY(roles_id ) 
 REFERENCES roles(id)
 ON DELETE SET NULL,
 
