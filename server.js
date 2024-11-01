@@ -5,7 +5,9 @@ const { printTable } = require('console-table-printer');
 
 const Deparment = require("./actions/department");
 const Roles = require('./actions/roles');
+const Employee = require('./actions/employee');
 const intento = new Deparment;
+const employeeClass = new Employee;
 const roles = new Roles;
 
 // function init(){
@@ -253,9 +255,9 @@ inquirer.prompt(questions).then(async (res) => {
                             }
                         ]).then(async (newName) => {
                             const salary = parseFloat(newName.salary);
-                            const createRoles = await roles.updateRole(rolesId,newName.newTitle, salary, newName.deparment);
+                            const createRoles = await roles.updateRole(rolesId, newName.newTitle, salary, newName.deparment);
                             console.log("role update:", createRoles);
-    
+
                         });
                     } catch (error) {
                         console.error("Error al modificar el rol:", error);
@@ -263,6 +265,134 @@ inquirer.prompt(questions).then(async (res) => {
                     break
             }
             break;
+
+
+        case "Employee":
+            switch (res.action) {
+
+                case "Create":
+
+                    const rolesData = await roles.getRoles();
+
+                    const rolesChoices = rolesData.map(role => ({
+                        name: `${role.title}`,
+                        value: role.id
+                    }));
+
+                    const newEmploye = await inquirer.prompt([
+                        {
+                            type: "input",
+                            message: colors.magenta("Enter First Name"),
+                            name: "firstName"
+                        },
+                        {
+                            type: "input",
+                            message: colors.magenta("Enter Last Name"),
+                            name: "lastName"
+                        },
+                        {
+                            type: "list",
+                            message: colors.magenta("Which rol do you want to assign?"),
+                            name: "roleId",
+                            choices: rolesChoices
+                        }
+
+                    ]).then(async (newEmploy) => {
+                        const createEmploy = await employeeClass.createEmployee(newEmploy.firstName, newEmploy.lastName, newEmploy.roleId);
+                        console.log("role create:", createEmploy);
+
+                    });
+                    break;
+
+                case "Read":
+                    try {
+                        const employee = await employeeClass.getEmployees();
+                        printTable(employee);
+
+                    } catch (error) {
+                        console.error("Error al obtener employees:", error);
+                    }
+                    break;
+
+                case "Delete":
+
+                    const employee = await employeeClass.getEmployees();
+
+                    const employChoices = employee.map(employ => ({
+                        name: `${employ.first_name} ${employ.last_name}`,
+                        value: employ.id
+                    }));
+
+                    const { employId } = await inquirer.prompt([
+                        {
+                            type: "list",
+                            message: colors.magenta("Which employ do you want to delete?"),
+                            name: "employId",
+                            choices: employChoices
+                        }
+                    ]);
+
+                    const deleteEmploy = await employeeClass.deleteEmployee(employId);
+                    console.log("Employ delete:", deleteEmploy);
+                    break;
+
+                case "Modify":
+
+                    const employe = await employeeClass.getEmployees();
+
+                    const employChoice = employe.map(employ => ({
+                        name: `${employ.first_name} ${employ.last_name}`,
+                        value: employ.id
+                    }));
+
+                    const rolData = await roles.getRoles();
+
+                    const rolChoice = rolData.map(role => ({
+                        name: `${role.title}`,
+                        value: role.id
+                    }));
+
+                    const { employesId } = await inquirer.prompt([
+                        {
+                            type: "list",
+                            message: colors.magenta("Which employ do you want to modify?"),
+                            name: "employesId",
+                            choices: employChoice
+                        }
+                    ]);
+
+                    const newEmployes = await inquirer.prompt([
+                        {
+                            type: "input",
+                            message: colors.magenta("Enter First Name"),
+                            name: "firstName"
+                        },
+                        {
+                            type: "input",
+                            message: colors.magenta("Enter Last Name"),
+                            name: "lastName"
+                        },
+                        {
+                            type: "list",
+                            message: colors.magenta("Which rol do you want to assign?"),
+                            name: "rolId",
+                            choices: rolChoice
+                        }
+
+                    ]).then(async (updateEmploy) => {
+                         const update = await employeeClass.updateEmployee(employesId, updateEmploy.firstName, updateEmploy.lastName, updateEmploy.rolId);
+                        console.log("employ create:", updateEmploy);
+
+                    });
+
+
+                    break;
+
+
+
+            }
+            break
+
         default:
             console.log("Something is wrong");
             break;
