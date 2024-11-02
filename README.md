@@ -25,7 +25,7 @@ Throughout this project, I improved my understanding of SQL and JavaScript, part
 - [Tests](#tests)
 
 ## Repository and Video
-- **Video Demonstration:** [Watch the video](https://app.screencastify.com/v3/watch/dnjX4KGvruMGwkwXnDDl)
+- **Video Demonstration:** [Watch the video](https://app.screencastify.com/v2/manage/videos/SYPGNxywJ4tg9nBBlsi7)
 - **Code Repository:** [View the code on GitHub](https://github.com/danielsantana9824/challenge12-SqlEmployeeTracker)
 
 ## Installation
