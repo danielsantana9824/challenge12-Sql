@@ -15,7 +15,7 @@ const questions = [
         type: "list",
         message: colors.magenta("What table do you want to work?"),
         name: "table",
-        choices: ["Department", "Roles", "Employee", "Employees by Manager", "Employees by Department"]
+        choices: ["Department", "Roles", "Employee", "Employees by Manager", "Employees by Department", "Salary by Deparment"]
     },
     {
         type: "list",
@@ -129,7 +129,6 @@ inquirer.prompt(questions).then(async (res) => {
                     const deleteDepartment = await intento.deleteDepartment(departmentId);
                     console.log("Department delete:", deleteDepartment);
                     break;
-
             }
             break;
 
@@ -425,7 +424,29 @@ inquirer.prompt(questions).then(async (res) => {
             const employeesByDepartment = await employeeClass.getEmployeesByDepartment();
             printTable(employeesByDepartment);
             break;
-            
+
+        case "Salary by Deparment":
+            const departments = await intento.getDepartments();
+
+                    const departmentChoices = departments.map(dept => ({
+                        name: `${dept.name}`,
+                        value: dept.id
+                    }));
+
+                    const { departmentId } = await inquirer.prompt([
+                        {
+                            type: "list",
+                            message: colors.magenta("Which department do you want to delete?"),
+                            name: "departmentId",
+                            choices: departmentChoices
+                        }
+                    ]);
+
+                    const salaryDepartment = await employeeClass.getSalaryByDeparment(departmentId);
+                    printTable(salaryDepartment);
+
+            break;
+
         default:
             console.log("Something is wrong");
             break;

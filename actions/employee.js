@@ -71,6 +71,13 @@ class Employee extends db {
 
         return result.rows;
     }
+
+    async getSalaryByDeparment(id) {
+        const result = await this.query(
+            'SELECT d.name AS department_name,  COALESCE(SUM(r.salary), 0) AS total_salary FROM department d LEFT JOIN roles r ON d.id = r.department_id LEFT JOIN employee e ON r.id = e.roles_id  WHERE d.id = $1 GROUP BY d.id, d.name;', [id]
+        );
+        return result.rows;
+    }
 }
 
 module.exports = Employee;
