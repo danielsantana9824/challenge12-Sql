@@ -3,7 +3,8 @@ const db = require("../db");
 class Employee extends db {
 
     async getEmployees() {
-        const result = await this.query('SELECT * FROM employee ORDER BY id');
+        const result = await this.query('SELECT  e.id AS id, e.first_name,e.last_name,r.title AS job_title,e.roles_id AS roles,d.name AS deparment,e.manager_id AS manager ,r.salary AS role_salary FROM employee e left JOIN roles r ON e.roles_id = r.id left JOIN department d ON r.department_id =  d.id ORDER BY e.id;');
+
         return result.rows;
     }
 
