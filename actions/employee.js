@@ -48,7 +48,28 @@ class Employee extends db {
                 manager_id;
         `);
         return result.rows;
-        
+
+    }
+
+    async getEmployeesByDepartment() {
+        const result = await this.query(`
+          SELECT 
+            e.id AS employee_id,
+            e.first_name,
+            e.last_name,
+            r.title AS role_title,
+            d.name AS department_name
+            FROM 
+                employee e
+            LEFT JOIN 
+                roles r ON e.roles_id = r.id
+            LEFT JOIN 
+                department d ON r.department_id = d.id
+            ORDER BY 
+                d.name, e.last_name;
+        `);
+
+        return result.rows;
     }
 }
 

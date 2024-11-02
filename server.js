@@ -10,20 +10,20 @@ const intento = new Deparment;
 const employeeClass = new Employee;
 const roles = new Roles;
 
-    const questions = [
-        {
-            type: "list",
-            message: colors.magenta("What table do you want to work?"),
-            name: "table",
-            choices: ["Department", "Roles", "Employee", "Employees by Manager"]
-        },
-        {
-            type: "list",
-            message: colors.magenta("What do you want to do?"),
-            name: "action",
-            choices: ["Create", "Modify", "Delete", "Read", "view"]
-        }
-    ];
+const questions = [
+    {
+        type: "list",
+        message: colors.magenta("What table do you want to work?"),
+        name: "table",
+        choices: ["Department", "Roles", "Employee", "Employees by Manager", "Employees by Department"]
+    },
+    {
+        type: "list",
+        message: colors.magenta("What do you want to do?"),
+        name: "action",
+        choices: ["Create", "Modify", "Delete", "Read", "Consulting"]
+    }
+];
 
 
 const PORT = process.env.PORT || 3001;
@@ -257,6 +257,8 @@ inquirer.prompt(questions).then(async (res) => {
                     break
             }
 
+            break;
+
         case "Employee":
             switch (res.action) {
 
@@ -414,11 +416,16 @@ inquirer.prompt(questions).then(async (res) => {
             }
             break;
 
-
         case "Employees by Manager":
             const EmployeesByManager = await employeeClass.getEmployeesByManager();
             printTable(EmployeesByManager);
             break;
+
+        case "Employees by Department":
+            const employeesByDepartment = await employeeClass.getEmployeesByDepartment();
+            printTable(employeesByDepartment);
+            break;
+            
         default:
             console.log("Something is wrong");
             break;
