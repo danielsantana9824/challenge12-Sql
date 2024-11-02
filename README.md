@@ -24,6 +24,10 @@ Throughout this project, I improved my understanding of SQL and JavaScript, part
 - [How to Contribute](#how-to-contribute)
 - [Tests](#tests)
 
+## NOTE IMPORTANT 
+If you want to use the "bonus" inquiries you need to put Consultin, if you don't do this, it's no working.
+
+
 ## Repository and Video
 - **Video Demonstration:** [Watch the video](https://app.screencastify.com/v2/manage/videos/SYPGNxywJ4tg9nBBlsi7)
 - **Code Repository:** [View the code on GitHub](https://github.com/danielsantana9824/challenge12-SqlEmployeeTracker)
