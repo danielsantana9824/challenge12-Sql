@@ -271,38 +271,59 @@ inquirer.prompt(questions).then(async (res) => {
             switch (res.action) {
 
                 case "Create":
+                    try {
+                        const rolesData = await roles.getRoles();
+                        const rolesChoices = rolesData.map(role => ({
+                            name: `${role.title}`,
+                            value: role.id
+                        }));
 
-                    const rolesData = await roles.getRoles();
+                        const existingEmployees = await employeeClass.getEmployees();
+                        const managerChoices = existingEmployees.map(employee => ({
+                            name: `${employee.first_name} ${employee.last_name}`,
+                            value: employee.id
+                        }));
+                        managerChoices.unshift({ name: 'No manager', value: null });  
 
-                    const rolesChoices = rolesData.map(role => ({
-                        name: `${role.title}`,
-                        value: role.id
-                    }));
+                        const newEmployee = await inquirer.prompt([
+                            {
+                                type: "input",
+                                message: colors.magenta("Enter First Name"),
+                                name: "firstName"
+                            },
+                            {
+                                type: "input",
+                                message: colors.magenta("Enter Last Name"),
+                                name: "lastName"
+                            },
+                            {
+                                type: "list",
+                                message: colors.magenta("Which role do you want to assign?"),
+                                name: "roleId",
+                                choices: rolesChoices
+                            },
+                            {
+                                type: "list",
+                                message: colors.magenta("Select a manager for this employee (or select 'No manager'):"),
+                                name: "managerId",
+                                choices: managerChoices
+                            }
+                        ]);
 
-                    const newEmploye = await inquirer.prompt([
-                        {
-                            type: "input",
-                            message: colors.magenta("Enter First Name"),
-                            name: "firstName"
-                        },
-                        {
-                            type: "input",
-                            message: colors.magenta("Enter Last Name"),
-                            name: "lastName"
-                        },
-                        {
-                            type: "list",
-                            message: colors.magenta("Which rol do you want to assign?"),
-                            name: "roleId",
-                            choices: rolesChoices
-                        }
+                        const createdEmployee = await employeeClass.createEmployee(
+                            newEmployee.firstName,
+                            newEmployee.lastName,
+                            newEmployee.roleId,
+                            newEmployee.managerId
+                        );
 
-                    ]).then(async (newEmploy) => {
-                        const createEmploy = await employeeClass.createEmployee(newEmploy.firstName, newEmploy.lastName, newEmploy.roleId);
-                        console.log("role create:", createEmploy);
+                        console.log("Employee created:", createdEmployee);
 
-                    });
+                    } catch (error) {
+                        console.error("Error creating employee:", error);
+                    }
                     break;
+
 
                 case "Read":
                     try {
@@ -337,57 +358,67 @@ inquirer.prompt(questions).then(async (res) => {
                     break;
 
                 case "Modify":
+                    try {
+                        const employees = await employeeClass.getEmployees();
 
-                    const employe = await employeeClass.getEmployees();
+                        const employeeChoices = employees.map(employee => ({
+                            name: `${employee.first_name} ${employee.last_name}`,
+                            value: employee.id
+                        }));
 
-                    const employChoice = employe.map(employ => ({
-                        name: `${employ.first_name} ${employ.last_name}`,
-                        value: employ.id
-                    }));
+                        const rolesData = await roles.getRoles();
+                        const roleChoices = rolesData.map(role => ({
+                            name: `${role.title}`,
+                            value: role.id
+                        }));
 
-                    const rolData = await roles.getRoles();
+                        const { employeeId } = await inquirer.prompt([
+                            {
+                                type: "list",
+                                message: colors.magenta("Which employee do you want to modify?"),
+                                name: "employeeId",
+                                choices: employeeChoices
+                            }
+                        ]);
 
-                    const rolChoice = rolData.map(role => ({
-                        name: `${role.title}`,
-                        value: role.id
-                    }));
+                        const updatedEmployee = await inquirer.prompt([
+                            {
+                                type: "input",
+                                message: colors.magenta("Enter First Name"),
+                                name: "firstName"
+                            },
+                            {
+                                type: "input",
+                                message: colors.magenta("Enter Last Name"),
+                                name: "lastName"
+                            },
+                            {
+                                type: "list",
+                                message: colors.magenta("Which role do you want to assign?"),
+                                name: "roleId",
+                                choices: roleChoices
+                            },
+                            {
+                                type: "list",
+                                message: colors.magenta("Select Manager for the Employee"),
+                                name: "managerId",
+                                choices: [{ name: "No Manager", value: null }].concat(employeeChoices)
+                            }
+                        ]);
 
-                    const { employesId } = await inquirer.prompt([
-                        {
-                            type: "list",
-                            message: colors.magenta("Which employ do you want to modify?"),
-                            name: "employesId",
-                            choices: employChoice
-                        }
-                    ]);
+                        const updated = await employeeClass.updateEmployee(
+                            employeeId,
+                            updatedEmployee.firstName,
+                            updatedEmployee.lastName,
+                            updatedEmployee.roleId,
+                            updatedEmployee.managerId
+                        );
 
-                    const newEmployes = await inquirer.prompt([
-                        {
-                            type: "input",
-                            message: colors.magenta("Enter First Name"),
-                            name: "firstName"
-                        },
-                        {
-                            type: "input",
-                            message: colors.magenta("Enter Last Name"),
-                            name: "lastName"
-                        },
-                        {
-                            type: "list",
-                            message: colors.magenta("Which rol do you want to assign?"),
-                            name: "rolId",
-                            choices: rolChoice
-                        }
-
-                    ]).then(async (updateEmploy) => {
-                         const update = await employeeClass.updateEmployee(employesId, updateEmploy.firstName, updateEmploy.lastName, updateEmploy.rolId);
-                        console.log("employ create:", updateEmploy);
-
-                    });
-
-
+                        console.log("Employee updated:", updated);
+                    } catch (error) {
+                        console.error("Error modifying employee:", error);
+                    }
                     break;
-
 
 
             }
