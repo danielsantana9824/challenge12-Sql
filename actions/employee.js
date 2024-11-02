@@ -30,6 +30,26 @@ class Employee extends db {
         );
         return result.rows[0];
     }
+
+    async getEmployeesByManager() {
+
+        const result = await this.query(`
+            SELECT 
+                e.first_name AS employee_first_name,
+                e.last_name AS employee_last_name,
+                m.id AS manager_id,
+                m.first_name AS manager_first_name,
+                m.last_name AS manager_last_name
+            FROM 
+                employee e
+            LEFT JOIN 
+                employee m ON e.manager_id = m.id
+            ORDER BY 
+                manager_id;
+        `);
+        return result.rows;
+        
+    }
 }
 
 module.exports = Employee;
